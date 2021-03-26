@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website</title>
+    <link rel="stylesheet" href="style-home.css">
+</head>
+<body>
+
+    <h1>Heartrate Monitor Co.</h1>
+
+    <div id="center-box">
+        <h2>Who's Heartrate are you going to monitor?</h2>
+
+        <div id="form">
+            <form onsubmit="saveUser(); return false">
+                <p>
+                    <input id="user" placeholder="User name..." required>
+                </p>
+                <p>
+                    <input type="submit" value="MONITOR">
+                </p>
+            </form>
+        </div>
+    </div>
+    
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // start-up code
+        })
+
+        async function saveUser() {
+            const user = {
+                time: new Date(),
+                user: document.getElementById('user').value,
+            }
+
+            // Request that the server adds our message
+            const response = await fetch('/users', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(user),
+            })
+            if (!response.ok) throw new Error('Failure during post')
+
+            userAdded()
+        }
+
+        function userAdded() {
+            window.location.href = "heartrate.html"
+        }
+
+    </script>
+</body>
+</html>

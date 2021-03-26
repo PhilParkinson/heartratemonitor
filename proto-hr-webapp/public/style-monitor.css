@@ -1,0 +1,171 @@
+body {
+    max-width: 75%;
+    margin: auto;
+    font-family: sans-serif;
+    background-color: #1f1f1f;
+}
+
+h1 {
+    font-size: 16px;
+    text-align: left;
+    color: rgb(245, 245, 245);
+}
+
+h2 {
+    font-size: 30px;
+    text-align: left;
+    color: rgb(245, 245, 245);
+}
+
+h3 {
+    margin: 10px 10px 10px 10px;
+    padding: 10px;
+    font-size: 20px;
+    text-align: left;
+    color: rgb(245, 245, 245);
+}
+
+h4 {
+    font-size: 20px;
+    text-align: center;
+    color: rgb(245, 245, 245);
+}
+
+p {
+    margin: 10px 10px 10px 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 20px;
+    text-align: left;
+    color: rgb(245, 245, 245);
+}
+
+.header-container {
+    display: grid;
+    align-items: center;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 10px 10px;
+    grid-template-areas:
+      "Name Name ButtonArea ButtonArea";
+}
+  
+.Name {
+    grid-area: Name;
+}
+  
+.ButtonArea {
+    text-align: right;
+    grid-area: ButtonArea;
+}
+
+.button {
+    width: 50%;
+    background-color: #961233;
+    color: white;
+    padding: 14px 20px;
+    margin: auto;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #c7224c;
+}
+
+.grid-container {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 10px 10px;
+    grid-template-areas:
+      "Heartrate Heartrate Status Action";
+}
+
+.description {
+    padding: 10px;
+    font-size: 14px;
+    text-align: left;
+    color: rgb(245, 245, 245);
+}
+
+.Heartrate {
+    border-radius: 25px;
+    background: #181818;
+    grid-area: Heartrate;
+}
+
+.responsive {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 75%;
+    height: auto;
+}
+  
+.Status {
+    grid-area: Status;
+    border-radius: 25px;
+    background: #181818;
+}
+  
+.Action {
+    background: #181818;
+    border-radius: 25px;
+    grid-area: Action
+}
+
+.alert {
+    font-size: 20px;
+    text-align: center;
+    color: rgb(245, 245, 245);
+    font-weight: bold;
+}
+
+@media only screen and (max-width: 700px) {
+    .grid-container{
+        grid-template-columns: 0.5fr 0.5fr;
+        grid-template-rows: 0.5fr 0.5fr;
+        grid-template-areas: 
+        "Heartrate Heartrate"
+        "Status Action";
+    } 
+}
+
+li {
+    color: rgb(245, 245, 245);
+}
+
+#form {
+    margin: auto;
+    text-align: center;
+    width: 50%;
+}
+
+input {
+    text-align: center;
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type=submit] {
+    width: 50%;
+    background-color: #961233;
+    color: white;
+    padding: 14px 20px;
+    margin: auto;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type=submit]:hover {
+    background-color: #c7224c;
+}

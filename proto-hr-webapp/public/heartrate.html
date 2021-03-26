@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website</title>
+    <link rel="stylesheet" href="style-monitor.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+</head>
+<body>
+    <h1>Heartrate Monitor Co.</h1>
+
+    <div class="header-container">
+        <div class="Name">
+            <h2><span id="user">(unknown)</span></h2>
+        </div>
+        <div class="ButtonArea">
+            <button class="button" type="button" onclick="backPressed()">BACK</button>
+        </div>
+    </div> 
+
+    <div class="grid-container">
+        <div class="Heartrate">
+            <h3>Heartrate</h3>
+            <canvas id="myChart"></canvas>
+        </div>
+        <div class="Status">
+            <h3>Status</h3>
+            <p><span id="averageHR">(unknown)</span> BPM</p>
+            <p class="description">An average beats per minute over the last 20 readings</p>
+            <img src="/images/Green.png" alt="Green Button" id="greenAlert" class="responsive">
+            <img src="/images/Amber.png" alt="Green Button" id="amberAlert" class="responsive">
+            <img src="/images/Red.png" alt="Green Button" id="redAlert" class="responsive">
+        </div>
+        <div class="Action">
+            <h3>Action</h3>
+            <p id="actionText" class="alert">(unknown)</p>
+        </div>
+    </div> 
+    
+    <script>
+
+        function backPressed() {
+            window.location.href = "index.html"
+        }
+
+        let heartrates = {}
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // start-up code
+            updateUser()
+        })
+
+        async function updateUser() {
+            const response = await fetch('/users/current')
+            if (!response.ok) throw new Error('Failure during fetch')
+            const result = await response.json()
+            const text = result[0].user
+            document.getElementById('user').innerText = text
+        }
+
+        setInterval(updateData,2000)
+
+        async function updateData(){
+            getHeartrates()
+            loadChart()
+            averageHR()
+        }
+
+        // This get request returns the most recent 20 readings from the heart rate sensor
+        async function getHeartrates() {
+            const response = await fetch('/heartrates/mostrecent')
+            if (!response.ok) throw new Error('Failure while fetching')
+            heartrates = await response.json()
+        }
+
+        function loadChart() {
+            var times = heartrates.map(function(e) {
+                return e.time;
+            });
+            var bpms = heartrates.map(function(e) {
+                return e.heartrate;
+            });;
+
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var chart = new Chart(ctx, {
+                // The type of chart being created
+                type: 'line',
+
+                // The data for our dataset
+                data: {
+                    labels: times.reverse(),
+                    datasets: [{
+                        label: 'Beats Per Minute',
+                        // backgroundColor: 'rgb(255, 99, 132)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        data: bpms.reverse() 
+                    }]
+                },
+                // Configuration options go here
+                options: {
+                    animationSteps: 0,
+                    animation: {
+                        duration: 0
+                    },
+                    layout: {
+                        padding: {
+                            left: 10,
+                            right: 10,
+                            top: 5,
+                            bottom: 10
+                        }
+                    },
+                    legend: {
+                        display: false
+                    },
+                    scales:{
+                        xAxes: [{
+                            display: false, //removes all the x-axis grid lines
+                            ticks: {
+                                display: false // removes the label
+                            }
+                        }]
+                        
+                    }
+                }
+            });
+        }
+
+        // Calculate the average bpm over the last 20 readings
+        async function averageHR(){
+            var bpms = heartrates.map(function(e) {
+                return e.heartrate
+            });
+
+            //Work out the sum of the numbers in our array
+            var totalSum = 0;
+            for(var i in bpms) {
+                totalSum += bpms[i];
+            }
+
+            // Work out how many numbers are in our array.
+            var numsCnt = bpms.length;
+
+            // Calculate average
+            var average = totalSum / numsCnt;
+
+            document.getElementById('averageHR').innerText = average.toString(10);
+            updateAlert(average);
+        }
+
+        async function updateAlert(average) {
+            if (average < 70 && average > 30) {
+                document.getElementById('greenAlert').style.display = "block";
+                document.getElementById('amberAlert').style.display = "none";
+                document.getElementById('redAlert').style.display = "none";
+                document.getElementById('actionText').innerText = "Heartrate is in a normal zone. Continue to monitor.";
+            } else if ( average > 0 && average < 30 || average > 70 && average < 100) {
+                document.getElementById('greenAlert').style.display = "none";
+                document.getElementById('amberAlert').style.display = "block";
+                document.getElementById('redAlert').style.display = "none";
+                document.getElementById('actionText').innerText = "Heartrate is in a worrying zone. Continue to monitor. If it continues get in touch with user.";
+            } else {
+                document.getElementById('greenAlert').style.display = "none";
+                document.getElementById('amberAlert').style.display = "none";
+                document.getElementById('redAlert').style.display = "block";
+                document.getElementById('actionText').innerText = "Urgent. Get in contact with user, if no contact ring emergency services.";
+            }
+        }
+        
+    </script>
+</body>
+</html>
